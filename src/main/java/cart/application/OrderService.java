@@ -8,7 +8,6 @@ import cart.dto.OrderResponse;
 import cart.dto.OrdersResponse;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,12 +26,12 @@ public class OrderService {
     public OrderResponse add(Member member, OrderRequest orderRequest) {
         List<OrderItem> orderItems = orderRequest.getOrderItems().stream()
                 .map(orderItemRequest -> {
-                    Product product = productDao.getProductById(orderItemRequest.getProductId());
+                    Product product = productDao.getProductById(orderItemRequest.getId());
                     return new OrderItem(product, orderItemRequest.getQuantity());
                 })
                 .collect(Collectors.toList());
 
-        Long orderId = orderDao.save(new Order(member, new OrderItems(orderItems), 3000L, new Date(2022-5-5)));
+        Long orderId = orderDao.save(new Order(member, new OrderItems(orderItems), 3000L, orderRequest.getOrderTime()));
 
         Order order = orderDao.findById(orderId);
 
